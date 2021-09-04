@@ -6,8 +6,13 @@ msg3: .asciiz "\n 3 - editar times  "
 msg4: .asciiz "\n 4 - para gerar resultados "
 msg5: .asciiz "\n Escolha: "
 msg6: .asciiz "\n O numero escolhido nao e uma escolha"
+msg7: .asciiz "\n Entre com o time "
+msg8: .asciiz ": "
 teste: .asciiz "\n Teste"
+
+times: .asciiz  "" , "" , "" , "" , "" , "" , "" , "" , "" , ""
 const : .word 10
+const2: .word 40
 jogos: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 vitorias: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 derrotas: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
@@ -71,15 +76,35 @@ syscall
 
 
 P1:
+add $t0,$zero,$zero
+addi $t1,$zero,1
+lw  $t7, const2
 
 
-li $v0, 4 # codigo para passar texto atraves do console syscall
-la $a0, teste # msg1 ser o objeto da escrita
-syscall
+loop:
+		beq $t0, $t7,main
+		li $v0, 4 # codigo para passar texto atraves do console syscall
+		la $a0, msg7 # msg1 ser o objeto da escrita
+		syscall
+        li $v0, 1 # codigo para passar texto atraves do console syscall
+		add $a0,$t1,$zero
+		syscall
+        li $v0, 4 # codigo para passar texto atraves do console syscall
+		la $a0, msg8 # msg1 ser o objeto da escrita
+		syscall
+
+        la $a0,times
+        li $a1,20
+		li $v0, 8 # Codigo para receber inteiros atraves do console syscall
+		syscall # valor colocado em $v0
+		sw $v0,times($t0)#recebendo valores do array
+		addi $t0,$t0,4
+        addi $t1,$t1,1
+	j loop
 
 
-li $v0,5
-syscall
+
+
 
 
 P2:
