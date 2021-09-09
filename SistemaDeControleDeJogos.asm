@@ -38,10 +38,11 @@ TABELA: .asciiz "TIMES \t JOGOS \t VITORIAS \t DERROTAS \n"
 const : .word 10
 const1 : .word 1
 const2: .word 40
+const4: .word 4
 
 
 times: .space 80 #10*8
-jogos: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
+jogos: .space 40
 vitorias: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 derrotas: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 
@@ -50,6 +51,8 @@ derrotas: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 .globl main 
 main:
 
+jal		zerar				# jump to zerar and save position to $ra
+
 
 jal menu
 
@@ -57,6 +60,33 @@ jal menu
 li $v0,10
 syscall
 
+
+zerar:
+la	$t0, jogos		#
+lw	$t1, const1		# 
+lw  $t2, const2	    # 
+
+add		$s0, $zero, $zero		# $s0 = zero1 +zerot2
+
+
+
+loopparazerar:
+
+mul $t5,$t2,$s0
+add $t3,$t0,$t5
+
+lw	$t4, 0($t3)
+add	$t4, $zero, $zero		#$t4 = zero1 +zerot2
+sw	$t4, 0($t3)		 
+ 
+
+
+
+
+addi $s0,$s0,1
+bne	$s0, $t1, loopparazerar	# if$s0 != $t1 then target
+
+jr		$ra					# jump to $ra
 
 
 menu:
@@ -137,7 +167,7 @@ loop_para_leitura_de_times:
 addi	$t4, $s0, 1			# $t3 = s01 1 0
 
 
-sll $t0,$s0,5 #multiplicando o indice por 32
+sll $t0,$s0,3 #multiplicando o indice por 32
 add $t3,$t2,$t0 #somando a multiplicacao com o endereco
 
 
@@ -157,6 +187,8 @@ syscall
 li		$v0,8 		# $v0 8= 
 la		$a0,0($t3) 		# $a0 0($t3)
 syscall
+
+
 addi $s0,$s0,1
 bne	$s0, $t1, loop_para_leitura_de_times	# if$s0 != $t1 then target
 
@@ -169,7 +201,6 @@ passagem_de_times_mostrar:
 
 la		$t2, times 
 lw		$t1, const	# $t1 = 2
-li		$a1, 	25	# $a1 = 8
 add 	$s0,$zero,$zero #zerando t0 para loop
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
@@ -182,7 +213,7 @@ loop_para_mostrar_times:
 addi	$t4, $s0, 1			# $t3 = s01 1 0
 
 
-sll $t0,$s0,5 #multiplicando o indice por 32
+sll $t0,$s0,3 #multiplicando o indice por 32
 add $t3,$t2,$t0 #somando a multiplicacao com o endereco
 
 
@@ -211,7 +242,7 @@ syscall
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
 
-move 	$s1, $v0		# $s1 = $01
+add		$s1, $v0, $zero		# $s1 = v01 +zerot2
 
 addi	$s1, $s1, -1			#igular ao indice 
 
@@ -223,11 +254,14 @@ syscall
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
 
-move 	$s2, $v0		# $s1 = $01
+
+add		$s2, $v0, $zero		# $s1 = v01 +zerot2
 addi	$s2, $s2, -1			#igular ao indice
 
 beq	$s2, $s1, Times_iguais	# if $s2 !=s$t1Times_iguaistarget
 
+move 	$a0, $s1		# $a0 =$s11
+move 	$a1, $s2		# $a1 = $t1
 j continua_1
 
 Times_iguais:
@@ -238,6 +272,12 @@ j escolha_dos_times
 
 continua_1:
 
+#time 1 em a0
+#time 2 em a1
+
+move 	 $s1,$a0		# $a0 =$s11
+move 	 $s2,$a1		# $a1 = $t1
+
 la		$t1, jogos
 la		$t2, vitorias
 la		$t3, derrotas
@@ -247,7 +287,8 @@ lw 		$t4,const1
 
 #aumentando a quantidade de jogos do primeiro jogador
 
-sll $t0,$s1,5 #multiplicando o indice por 32
+lw		$s6,const4		# 
+mul $t0,$s6,$s1
 add $t6,$t1,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t6)
@@ -257,12 +298,22 @@ sw $t5, 0($t6)
 
 #aumentando a quantidade de jogos do segundo jogador
 
-sll $t0,$s1,5 #multiplicando o indice por 32
-add $t6,$t7,$t0 #somando a multiplicacao com o endereco
+lw	$s6,const4		# 
+mul $t0,$s6,$s2
+add $t6,$t1,$t0 #somando a multiplicacao com o endereco
 
+lw		$t5, 0($t6)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw $t5, 0($t6)
 
+##AUMENTA VITORIAS CORRETO
 
 #time 1
+
+
+sll $t0,$s1,3 #multiplicando o indice por 32
+add $t6,$t7,$t0 #somando a multiplicacao com o endereco
+
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
 la $a0, 0($t6) # msg1 ser o objeto da escrita
@@ -294,7 +345,7 @@ syscall
 
 #time 2
 
-sll $t0,$s2,5 #multiplicando o indice por 32
+sll $t0,$s2,3 #multiplicando o indice por 32
 add $t6,$t7,$t0 #somando a multiplicacao com o endereco
 
 
@@ -332,10 +383,13 @@ syscall
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
 move $t6,$v0
+addi $t6, $t6, -1			# $t6 = $61 1 0
 
 
+#Ate aqui ok
 
-sll $t0,$t6,5 #multiplicando o indice por 32
+lw	$s6,const4		# 
+mul $t0,$s6,$t6
 add $t7,$t2,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
@@ -349,22 +403,31 @@ j Segundo_time_perdedor
 
 Primeiro_Time_perdedor:
 
-move $t6,$s1
+lw	$s6,const4		# 
 
-sll $t0,$t6,5 #multiplicando o indice por 32
+mul $t0,$s6,$s1
+
+
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
 addi	$t5, $t5, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
+
+
 j continua_2
 
 Segundo_time_perdedor:
 
-move $t6,$s2
 
-sll $t0,$t6,5 #multiplicando o indice por 32
+
+
+lw	$s6,const4		# 
+
+mul $t0,$s6,$s2
+
+
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
@@ -373,6 +436,7 @@ sw 		$t5, 0($t7)
 
 
 continua_2:
+
 
 j menu
 
@@ -399,14 +463,7 @@ syscall
 
 loop_para_mostrar_times_TABELA:
 
-sll $t0,$s0,5 #multiplicando o indice por 32
-
-
-
-
-
-
-
+sll $t0,$s0,3 #multiplicando o indice por 32
 add $t3,$t2,$t0 #somando a multiplicacao com o endereco
 #TIMES
 li		$v0,4		
@@ -414,71 +471,55 @@ la		$a0,0($t3)
 syscall
 
 
+lw	$s6, const4		# 
+mul $t8,$s6,$s0
 
 
 
-
-
-add $t3,$t4,$t0 #somando a multiplicacao com o endereco
+add $t3,$t4,$t8 #somando a multiplicacao com o endereco
 #JOGOS
 
-li		$v0,4		
-lw		$t7,0($t3)
-move 	$a0, $t7		# $a0 = $71		
-syscall
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-add $t3,$t5,$t0 #somando a multiplicacao com o endereco
-
-#VITORIAS
-
-li		$v0,1
-lw		$t7,0($t3)
-move 	$a0, $t7		# $a0 = $71					
-syscall
-
-
-
-
-
-
-
-add $t3,$t6,$t0 #somando a multiplicacao com o endereco
-#DERROTAS
 li		$v0,1		
 lw		$t7,0($t3)
-move 	$a0, $t7		# $a0 = $71				
+add     $a0,$t7,$zero
 syscall
 
 
 
 
-li		$v0,4		
-la		$a0,enter 		
+
+add $t3,$t5,$t8 #somando a multiplicacao com o endereco
+#Vitorias
+
+li		$v0,1		
+lw		$t7,0($t3)
+add     $a0,$t7,$zero
 syscall
 
 
 
+add $t3,$t6,$t8 #somando a multiplicacao com o endereco
+#Derrotas
+
+li		$v0,1		
+lw		$t7,0($t3)
+add     $a0,$t7,$zero
+syscall
+
+
+
+#texto de enter
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, enter # msg1 ser o objeto da escrita
+syscall
 
 
 addi $s0,$s0,1
 bne	$s0, $t1, loop_para_mostrar_times_TABELA	# if$s0 != $t1 then target
+
+
+
 
 
 j menu
