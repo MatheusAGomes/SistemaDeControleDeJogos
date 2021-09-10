@@ -36,7 +36,7 @@ msg22: .asciiz "\n Antigo nome: "
 msg23: .asciiz "\n Partidas do time: \n "
 msg24: .asciiz " Jogou \n"
 msg25: .asciiz " Nao Jogou \n"
-msg26: .asciiz " Escolha um time para alterar a partida:  \n"
+msg26: .asciiz " Escolha um time para alterar a partida:  "
 
 
 
@@ -601,7 +601,7 @@ bne	$s0, $t1, loop_para_alterar_times	# if$s0 != $t1 then target
 
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
-la $a0, msg5 # msg1 ser o objeto da escrita
+la $a0, msg16 # msg1 ser o objeto da escrita
 syscall
 
 li $v0, 5 # codigo para passar texto atraves do console syscall
@@ -724,7 +724,7 @@ syscall
 
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
-la $a0, msg16 # msg1 ser o objeto da escrita
+la $a0, msg20 # msg1 ser o objeto da escrita
 syscall
 
 
@@ -945,9 +945,190 @@ j continua_loop_P32_2
 
 Mudar_Para_1:
 
+#S3 E A1
+
+la		$s1,times		# 
+
+
+sll $t0,$a1,3 #multiplicando o indice por 32
+add $t0,$s1,$t0 #somando a multiplicacao com o endereco
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, 0($t0) # msg1 ser o objeto da escrita
+syscall
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, aspas1 # msg1 ser o objeto da escrita
+syscall
+
+li $v0, 1 # codigo para passar texto atraves do console syscall
+addi $a0, $a1, 1			# $a0 = at1 1 0
+syscall
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, aspas2 # msg1 ser o objeto da escrita
+syscall
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, versus # msg1 ser o objeto da escrita
+syscall
+
+
+sll $t0,$s3,3 #multiplicando o indice por 32
+add $t0,$s1,$t0 #somando a multiplicacao com o endereco
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, 0($t0) # msg1 ser o objeto da escrita
+syscall
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, aspas1 # msg1 ser o objeto da escrita
+syscall
+
+li $v0, 1 # codigo para passar texto atraves do console syscall
+addi $a0, $s3, 1			# $a0 = at1 1 0
+syscall
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, aspas2 # msg1 ser o objeto da escrita
+syscall
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, msg13 # msg1 ser o objeto da escrita
+syscall
+
+
+la		$t1, jogos
+lw	    $s6,const4		# 
+
+#aumentando jogos
+
+
+mul $t0,$s6,$a1
+add $t7,$t1,$t0 #somando a multiplicacao com o endereco
+
+
+lw		$t5, 0($t7)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t7)
+
+
+mul $t0,$s6,$s3
+add $t7,$t1,$t0 #somando a multiplicacao com o endereco
+
+
+lw		$t5, 0($t7)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t7)
 
 
 
-continua_loop_P32_2:
+li		$v0, 5 		# $v0  5= 
+syscall
+move $t6,$v0
+addi $t6, $t6, -1
+
+#(A1 E S3) E (T6 VITORIOSO)
+lw  	$s6,const4
+la		$t2, vitorias		# 
+
+mul $t0,$s6,$t6
+add $t7,$t2,$t0 #somando a multiplicacao com o endereco
+
+lw		$t5, 0($t7)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t7)
+
+beq		$t6, $t1, Primeiro_Time_perdedor_P3	# if $t0 == $t1 then target
+
+j Segundo_time_perdedor_P3
+
+Primeiro_Time_perdedor_P3:
+lw  	$s6,const4
+la	$t3, derrotas		# 
+mul $t0,$s6,$a1
+add $t7,$t3,$t0 #somando a multiplicacao com o endereco
+
+lw		$t5, 0($t7)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t7)
+
+la		$s5, resultadodejogos		#
+lw	    $s6, const36
+lw      $s7, const4
+mul     $t0,$a1,$s6
+mul     $t1,$s3,$s7
+add     $t0,$t0,$t1
+add		$t0,$s5,$t0		# $t0 = s51 + 0t2
+ 
+
+lw		$t5, 0($t0)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t0)
+
+
+la		$s5, resultadodejogos		#
+lw	    $s6, const9
+lw      $s7, const4
+mul     $t0,$s3,$s6
+mul     $t1,$a1,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0		# $t0 = s51 + 0t2
+
+
+
+lw		$t5, 0($t0)
+addi	$t5, $t5,-1			# $t5 = $51 1 0
+sw 		$t5, 0($t0)
+
+j continua_3
+
+Segundo_time_perdedor_P3:
+lw  	$s6,const4
+la	$t3, derrotas		# 
+mul $t0,$s6,$s3
+add $t7,$t3,$t0 #somando a multiplicacao com o endereco
+
+lw		$t5, 0($t7)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t7)
+
+
+
+la		$s5, resultadodejogos		#
+lw	    $s6, const36
+lw      $s7, const4
+mul     $t0,$s3,$s6
+mul     $t1,$a1,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0		# $t0 = s51 + 0t2
+
+lw		$t5, 0($t0)
+addi	$t5, $t5, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t0)
+
+
+la		$s5, resultadodejogos		#
+lw	    $s6, const36
+lw      $s7, const4
+mul     $t0,$a1,$s6
+mul     $t1,$s3,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0		# $t0 = s51 + 0t2
+
+lw		$t5, 0($t0)
+addi	$t5, $t5,-1			# $t5 = $51 1 0
+sw 		$t5, 0($t0)
+
+
+
+continua_3:
 
 j menu
+
