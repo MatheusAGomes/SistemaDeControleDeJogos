@@ -36,7 +36,23 @@ msg22: .asciiz "\n Antigo nome: "
 msg23: .asciiz "\n Partidas do time: \n "
 msg24: .asciiz " Jogou \n"
 msg25: .asciiz " Nao Jogou \n"
-msg26: .asciiz " Escolha um time para alterar a partida:  "
+msg26: .asciiz " Escolha um time para alterar a partida(Numero do time):  "
+msg27: .asciiz " Perdeu \n "
+msg28: .asciiz " Ganhou \n "
+
+
+
+
+
+
+
+
+
+SEMI: .asciiz " SEMI-FINAL \n "
+CLASSIFICADO: .asciiz " CLASSIFICADO \n "
+NAOCLASSIFICADO: .asciiz " NAO CLASSIFICADO \n "
+REBAIXADO: .asciiz " REBAIXADO \n "
+
 
 
 
@@ -813,7 +829,7 @@ la $a0, msg23 # msg1 ser o objeto da escrita
 syscall
 
 mul $t0,$a1,$t3
-add	$t7, $t1, $t0		#$t7 = $t1 + 0t2
+add	$t7,$t1,$t0		#$t7 = $t1 + 0t2
 
 
 loop_para_mostrar_jogos:
@@ -941,7 +957,7 @@ lw	$t5, 0($t0)
 add	$t5, $zero, $zero
 sw	$t5, 0($t0)
 
-j continua_loop_P32_2
+j continua_3
 
 Mudar_Para_1:
 
@@ -1132,3 +1148,119 @@ continua_3:
 
 j menu
 
+P3_3:
+
+#A1 PRIMEIRO TIME
+
+la		$t1, resultadodejogos
+la      $s7, times
+lw		$t2, const9
+lw		$t3, const36
+lw		$t4, const4		
+add		$s0, $zero, $zero		# $s0 = zero1 +zerot2
+
+lw      $s1,constneg
+lw      $s2,const1
+
+
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, msg23 # msg1 ser o objeto da escrita
+syscall
+
+mul $t0,$a1,$t3
+add	$t7,$t1,$t0		#$t7 = $t1 + 0t2
+
+
+loop_para_mostrar_jogos_P3:
+
+sll $t0,$s0,3 #multiplicando o indice por 32
+add $t3,$s7,$t0 #somando a multiplicacao com o endereco
+
+#printa o nome
+
+
+
+
+lw $t6,0($t7)
+
+#se t6 = -1 vai para continua_loop_P3
+beq	$t6, $s1, continua_loop_P3_negativo	# if$t0 == $t1 then target
+beq $t6, $s2, continua_loop_P3_positivo
+
+
+
+
+j continua_loop_P32_P3
+continua_loop_P3_positivo:
+li		$v0,4		# $v0 8= 
+la		$a0,0($t3) 		# $a0 0($t3)
+syscall
+
+li		$v0,4		# $v0 8= 
+la		$a0,aspas1 		# $a0 0($t3)
+syscall
+
+
+li		$v0,1		# $v0 8= 
+move		$a0,$s0 		# $a0 0($t3)
+syscall
+
+
+li		$v0,4		# $v0 8= 
+la		$a0,aspas2 		# $a0 0($t3)
+syscall
+
+
+li		$v0,4 		
+la    $a0,msg28
+syscall
+
+
+j continua_loop_P32_P3
+continua_loop_P3_negativo:
+li		$v0,4		# $v0 8= 
+la		$a0,0($t3) 		# $a0 0($t3)
+syscall
+
+li		$v0,4		# $v0 8= 
+la		$a0,aspas1 		# $a0 0($t3)
+syscall
+
+
+li		$v0,1		# $v0 8= 
+move		$a0,$s0 		# $a0 0($t3)
+syscall
+
+
+li		$v0,4		# $v0 8= 
+la		$a0,aspas2 		# $a0 0($t3)
+syscall
+
+li		$v0,4 		
+la    $a0,msg27
+syscall
+
+continua_loop_P32_P3:
+
+add		$t7, $t7, $t4		# $t0 = $01 +t4t2
+addi	$s0, $s0, 1		# $s0 = zero1 +zerot2
+bne	$s0, $t2, loop_para_mostrar_jogos_P3	# if$s0 != $t1 then target
+
+li		$v0,4 		
+la    $a0,msg26
+syscall
+
+li		$v0,5 		
+syscall
+addi	$s3, $v0, -1			#s3 = v01 -1 0
+
+
+
+j menu
+
+P3_4:
+
+
+
+j menu
