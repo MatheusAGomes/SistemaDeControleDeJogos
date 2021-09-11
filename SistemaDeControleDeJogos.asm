@@ -43,7 +43,7 @@ msg28: .asciiz " Ganhou \n "
 
 
 
-
+voltar: .asciiz "\n 4 - Voltar: "
 
 
 
@@ -488,7 +488,7 @@ mul $t0,$s6,$s1
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
 
@@ -504,7 +504,7 @@ add		$t0, $s5, $t0		# $t0 = s51 + 0t2
  
 
 lw		$t5, 0($t0)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 
@@ -519,7 +519,7 @@ add		$t0, $s5, $t0		# $t0 = s51 + 0t2
 
 
 lw		$t5, 0($t0)
-addi	$t5, $t5,-1			# $t5 = $51 1 0
+addi	$t5, $zero,-1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 
@@ -539,7 +539,7 @@ mul $t0,$s6,$s2
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
 
@@ -554,7 +554,7 @@ add     $t0,$t0,$t1
 add		$t0, $s5, $t0		# $t0 = s51 + 0t2
 
 lw		$t5, 0($t0)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 
@@ -567,7 +567,7 @@ add     $t0,$t0,$t1
 add		$t0, $s5, $t0		# $t0 = s51 + 0t2
 
 lw		$t5, 0($t0)
-addi	$t5, $t5,-1			# $t5 = $51 1 0
+addi	$t5, $zero,-1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 
@@ -743,6 +743,9 @@ li $v0, 4 # codigo para passar texto atraves do console syscall
 la $a0, msg20 # msg1 ser o objeto da escrita
 syscall
 
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, voltar # msg1 ser o objeto da escrita
+syscall
 
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
@@ -1072,35 +1075,35 @@ mul $t0,$s6,$a1
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
 la		$s5, resultadodejogos		#
 lw	    $s6, const36
 lw      $s7, const4
-mul     $t0,$a1,$s6
-mul     $t1,$s3,$s7
+mul     $t0,$s3,$s6
+mul     $t1,$a1,$s7
 add     $t0,$t0,$t1
 add		$t0,$s5,$t0		# $t0 = s51 + 0t2
  
 
 lw		$t5, 0($t0)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 
 la		$s5, resultadodejogos		#
 lw	    $s6, const9
 lw      $s7, const4
-mul     $t0,$s3,$s6
-mul     $t1,$a1,$s7
+mul     $t0,$a1,$s6
+mul     $t1,$s3,$s7
 add     $t0,$t0,$t1 
 add		$t0, $s5, $t0		# $t0 = s51 + 0t2
 
 
 
 lw		$t5, 0($t0)
-addi	$t5, $t5,-1			# $t5 = $51 1 0
+addi	$t5, $zero,-1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 j continua_3
@@ -1112,22 +1115,9 @@ mul $t0,$s6,$s3
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
-
-
-la		$s5, resultadodejogos		#
-lw	    $s6, const36
-lw      $s7, const4
-mul     $t0,$s3,$s6
-mul     $t1,$a1,$s7
-add     $t0,$t0,$t1 
-add		$t0, $s5, $t0		# $t0 = s51 + 0t2
-
-lw		$t5, 0($t0)
-addi	$t5, $t5, 1			# $t5 = $51 1 0
-sw 		$t5, 0($t0)
 
 
 la		$s5, resultadodejogos		#
@@ -1139,7 +1129,20 @@ add     $t0,$t0,$t1
 add		$t0, $s5, $t0		# $t0 = s51 + 0t2
 
 lw		$t5, 0($t0)
-addi	$t5, $t5,-1			# $t5 = $51 1 0
+addi	$t5, $zero, 1			# $t5 = $51 1 0
+sw 		$t5, 0($t0)
+
+
+la		$s5, resultadodejogos		#
+lw	    $s6, const36
+lw      $s7, const4
+mul     $t0,$s3,$s6
+mul     $t1,$a1,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0		# $t0 = s51 + 0t2
+
+lw		$t5, 0($t0)
+addi	$t5, $zero,-1			# $t5 = $51 1 0
 sw 		$t5, 0($t0)
 
 
@@ -1203,7 +1206,7 @@ syscall
 
 
 li		$v0,1		# $v0 8= 
-move		$a0,$s0 		# $a0 0($t3)
+addi		$a0,$s0,1 		# $a0 0($t3)
 syscall
 
 
@@ -1229,7 +1232,7 @@ syscall
 
 
 li		$v0,1		# $v0 8= 
-move		$a0,$s0 		# $a0 0($t3)
+addi		$a0,$s0,1 		# $a0 0($t3)
 syscall
 
 
@@ -1255,12 +1258,142 @@ li		$v0,5
 syscall
 addi	$s3, $v0, -1			#s3 = v01 -1 0
 
+##time 1 em A1
+##time 2 em S3
+
+
+
+la		$s5, resultadodejogos		#
+lw	    $s6, const36
+lw      $s7, const4
+lw      $s1,const1
+mul     $t0,$s3,$s6
+mul     $t1,$a1,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0		# $t0 = s51 + 0t2
+
+lw		$t5, 0($t0)
+beq		$t5, $s1, Primeiro_Time_vencedor	# if $t5 == $t1 then target
+
+
+#A1 Derrotado E S3 O Vencedor
+
+addi	$t5,$zero,1			# $t0 =1 -1 0
+sw		$t5, 0($t0)	
+
+
+mul     $t0,$a1,$s6
+mul     $t1,$s3,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0
+
+addi	$t5,$zero,-1			# $t0 =1 -1 0
+sw		$t5, 0($t0)
+
+la		$t1, vitorias		
+
+
+#alterando jogador 1
+mul     $t0,$a1,$s7
+add     $t0,$t0,$t1
+
+lw		$t5, 0($t0)
+addi	$t5,$t5,-1
+sw		$t5, 0($t0)
+
+
+la      $s4, derrotas
+
+mul     $t0,$a1,$s7
+add     $t7,$t0,$s4
+
+lw		$t5, 0($t7)
+addi	$t5,$t5,1
+sw		$t5, 0($t7)
+
+#alterando jogador 2
+
+mul     $t0,$s3,$s7
+add     $t0,$t0,$t1
+
+lw		$t5, 0($t0)
+addi	$t5,$t5,1
+sw		$t5, 0($t0)
+
+la      $s4, derrotas
+
+mul     $t0,$s3,$s7
+add     $t7,$t0,$s4
+
+lw		$t5, 0($t7)
+addi	$t5,$t5,-1
+sw		$t5, 0($t7)
+
+
+
+j fim_da_alteracao
+
+#A1 SE TORNARA O vencedor E S3 O derrotado
+Primeiro_Time_vencedor:
+
+
+li		$v0,1 		
+addi    $a0,$zero,2
+syscall
+
+addi	$t5,$zero,-1			# $t0 =1 -1 0
+sw		$t5, 0($t0)		# 
+
+mul     $t0,$a1,$s6
+mul     $t1,$s3,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0
+
+addi	$t5,$zero,1			# $t0 =1 -1 0
+sw		$t5, 0($t0)	
+
+
+la		$t1, vitorias		# 
+la      $t2, derrotas
+
+#alterando jogador 1
+mul     $t0,$a1,$s7
+add     $t0,$t0,$t1
+
+lw		$t5, 0($t0)
+addi	$t5,$t5,1
+sw		$t5, 0($t0)
+
+
+mul     $t0,$a1,$s7
+add     $t0,$t0,$t2
+
+lw		$t5, 0($t0)
+addi	$t5,$t5,-1
+sw		$t5, 0($t0)
+
+#alterando jogador 2
+
+mul     $t0,$s3,$s7
+add     $t0,$t0,$t1
+
+lw		$t5, 0($t0)
+addi	$t5,$t5,-1
+sw		$t5, 0($t0)
+
+mul     $t0,$s3,$7
+add     $t0,$t0,$t2
+
+lw		$t5, 0($t0)
+addi	$t5,$t5, 1
+sw		$t5, 0($t0)
+
+
+fim_da_alteracao:
 
 
 j menu
 
 P3_4:
-
-
 
 j menu
