@@ -524,6 +524,8 @@ sw 		$t5, 0($t0)
 
 
 
+
+
 j continua_2
 
 Segundo_time_perdedor:
@@ -899,38 +901,42 @@ add		$t0, $s5, $t0
 lw		$t5, 0($t0)
 beq		$t5, $zero, Mudar_Para_1	# if 5 == $t1 then target
 
-##Mudar para 0
-##Mudar tabela de resultado 
+
+
+#zerando primeiro resultado
 
 add	$t5, $zero, $zero
 sw	$t5, 0($t0)
+
+#pegando o valor do segundo
+
 mul     $t0,$s3,$s6
 mul     $t1,$a1,$s7
 add     $t0,$t0,$t1 
 add		$t0, $s5, $t0	
 lw		$t5, 0($t0)
 
+#se o segundo = -1 Segundo jogador
+
 beq		$t5, $s2, Segundo_Jogador_derrotado
 
 
-Segundo_Jogador_derrotado:
 
 
-#tabela de vitoriosos
-mul $t0,$a1,$s7
-add	$t0, $t0,$s0
+mul $t0,$s3,$s7
+add	$t0,$t0,$s0
 lw  $t5, 0($t0)
-add $t5,$zero,$zero
+addi $t5,$t5,-1
 sw  $t5,0($t0)		# 
 
 
 
 #tabela de derrortas
 
-mul $t0,$s3,$s7
+mul $t0,$a1,$s7
 add	$t0,$t0,$s1
 lw  $t5, 0($t0)
-add $t5,$zero,$zero
+addi $t5,$t5,-1
 sw  $t5,0($t0)
 
 
@@ -950,14 +956,71 @@ sw	$t5, 0($t0)
 mul     $t0,$s3,$s7
 add     $t0,$t0,$s4
 lw	$t5, 0($t0)
-add	$t5, $zero, $zero
+addi	$t5, $t5, -1
 sw	$t5, 0($t0)
 
 
 mul     $t0,$a1,$s7
 add     $t0,$t0,$s4
 lw	$t5, 0($t0)
+add	$t5, $t5, -1
+sw	$t5, 0($t0)
+
+
+
+
+
+
+j continua_3
+Segundo_Jogador_derrotado:
+
+
+
+# A1 DIMINUIR UMA VITORIA, RETIRAR JOGO E zerar RESULTADO
+# s3 DIMINUIR UMA derrota, RETIRAR JOGO E zerar RESULTADO 
+
+#tabela de vitoriosos
+mul $t0,$a1,$s7
+add	$t0,$t0,$s0
+lw  $t5, 0($t0)
+addi $t5,$t5,-1
+sw  $t5,0($t0)		# 
+
+
+
+#tabela de derrortas
+
+mul $t0,$s3,$s7
+add	$t0,$t0,$s1
+lw  $t5, 0($t0)
+addi $t5,$t5,-1
+sw  $t5,0($t0)
+
+
+##mudando tabela de resultado
+mul     $t0,$s3,$s6
+mul     $t1,$a1,$s7
+add     $t0,$t0,$t1 
+add		$t0, $s5, $t0	
+lw		$t5, 0($t0)
 add	$t5, $zero, $zero
+sw	$t5, 0($t0)
+
+
+
+#e mudar tabela de jogos
+
+mul     $t0,$s3,$s7
+add     $t0,$t0,$s4
+lw	$t5, 0($t0)
+addi	$t5, $t5, -1
+sw	$t5, 0($t0)
+
+
+mul     $t0,$a1,$s7
+add     $t0,$t0,$s4
+lw	$t5, 0($t0)
+add	$t5, $t5, -1
 sw	$t5, 0($t0)
 
 j continua_3
@@ -1364,13 +1427,15 @@ lw		$t5, 0($t0)
 addi	$t5,$t5,1
 sw		$t5, 0($t0)
 
+la      $s4, derrotas
+
 
 mul     $t0,$a1,$s7
-add     $t0,$t0,$t2
+add     $t7,$t0,$s4
 
-lw		$t5, 0($t0)
+lw		$t5, 0($t7)
 addi	$t5,$t5,-1
-sw		$t5, 0($t0)
+sw		$t5, 0($t7)
 
 #alterando jogador 2
 
@@ -1381,12 +1446,14 @@ lw		$t5, 0($t0)
 addi	$t5,$t5,-1
 sw		$t5, 0($t0)
 
-mul     $t0,$s3,$7
-add     $t0,$t0,$t2
+la      $s4, derrotas
 
-lw		$t5, 0($t0)
+mul     $t0,$s3,$7
+add     $t7,$t0,$s4
+
+lw		$t5, 0($t7)
 addi	$t5,$t5, 1
-sw		$t5, 0($t0)
+sw		$t5, 0($t7)
 
 
 fim_da_alteracao:
