@@ -1,38 +1,38 @@
 .data
 
-msg1: .asciiz "\n 1 - para registrar times "
-msg2: .asciiz "\n 2 - para registrar resultados "
-msg3: .asciiz "\n 3 - editar times  "
-msg4: .asciiz "\n 4 - para gerar resultados "
-msg5: .asciiz "\n Escolha: "
+msg1: .asciiz "\n 1 - REGISTRAR TIMES "
+msg2: .asciiz "\n 2 - REGISTRAR RESULTADOS "
+msg3: .asciiz "\n 3 - EDITAR (TIMES/PARTIDAS/RESULTADOS)  "
+msg4: .asciiz "\n 4 - GERAR RESULTADO DA FASE DE GRUPOS "
+msg5: .asciiz "\n ESCOLHA: "
 msg6: .asciiz "\n O numero escolhido nao e uma escolha"
-msg7: .asciiz "\n Entre com o time "
+msg7: .asciiz "\n ENTRE COM O TIME "
 msg8: .asciiz " : "
-msg9: .asciiz "\n Selecione o primeiro time a fazer o resultado(Numero do time): "
-msg11: .asciiz "\n Selecione o segundo time a fazer o resultado(Numero do time): "
-msg12: .asciiz "\n Os times sao iguais, escolha 2 times diferentes"
-msg13: .asciiz "\n Time vitorioso(Numero do time): "
-msg14: .asciiz "\n 5 - Resultados "
-msg15: .asciiz "\n 0 - Sair "
-msg16: .asciiz "\n Escolha o time para fazer a alteracao (Numero do time):  "
-msg17: .asciiz "\n 1 - Alterar o nome do time "
-msg18: .asciiz "\n 2 - Alterar jogo "
-msg19: .asciiz "\n 3 - Alterar resultado "
-msg20: .asciiz "\n Escolha: "
-msg21: .asciiz "\n Novo nome: "
-msg22: .asciiz "\n Antigo nome: "
-msg23: .asciiz "\n Partidas do time: \n "
-msg24: .asciiz " Jogou \n"
-msg25: .asciiz " Nao Jogou \n"
-msg26: .asciiz " Escolha um time para alterar a partida(Numero do time):  "
-msg27: .asciiz " Perdeu \n "
-msg28: .asciiz " Ganhou \n "
+msg9: .asciiz "\n SELECIONE O PRIMEIRO TIME(NUMERO DO TIME): "
+msg11: .asciiz "\n SELECIONE O SEGUNDO TIME(NUMERO DO TIME): "
+msg12: .asciiz "\n TIMES IGUAIS, ESCOLHA 2 TIMES DIFERENTES"
+msg13: .asciiz "\n ESCOLHA O TIME VITORIOSO(NUMERO DO TIME): "
+msg14: .asciiz "\n 5 - RESULTADOS "
+msg15: .asciiz "\n 0 - SAIR "
+msg16: .asciiz "\n ESCOLHA O TIME PARA FAZER A ALTERACAO (NUMERO DO TIME):  "
+msg17: .asciiz "\n 1 - ALTERAR NOME DO TIME "
+msg18: .asciiz "\n 2 - ALTERAR JOGO "
+msg19: .asciiz "\n 3 - ALTERAR RESULTADO "
+msg20: .asciiz "\n ESCOLHA: "
+msg21: .asciiz "\n NOVO NOME: "
+msg22: .asciiz "\n ANTIGO NOME: "
+msg23: .asciiz "\n PARTIDAS DO TIME: \n "
+msg24: .asciiz " JOGOU \n"
+msg25: .asciiz " NAO JOGOU \n"
+msg26: .asciiz " ESCOLHA UM TIME PARA ALTERAR A PARTIDA (NUMERO DO TIME):  "
+msg27: .asciiz " PERDEU \n "
+msg28: .asciiz " GANHOU \n "
+msg29: .asciiz " APERTE ENTER TECLA PARA SAIR ! \n "
+msg30: .asciiz "\n A QUANTIDADE DE JOGOS NAO FOI CONCLUIDA ! \n "
 
-msg29: .asciiz " Aperte qualquer tecla para sair ! \n "
 
 
-
-voltar: .asciiz "\n 4 - Voltar: "
+voltar: .asciiz "\n 4 - VOLTAR: "
 
 Situacao: .asciiz " : \n "
 
@@ -49,7 +49,8 @@ CLASSIFICACAO: .asciiz "\n CLASSIFICACAO: "
 
 NOME: .asciiz "\n NOME: "
 Nvitorias: .asciiz "\n VITORIAS: "
-
+Njogos: .asciiz "\n JOGOS: "
+NdeDerrotas: .asciiz "\n Derrotas: "
 
 
 
@@ -65,12 +66,12 @@ versus: .asciiz "X \n"
 
 
 
-msg10: .asciiz "Numero do time \t Time \n"
+msg10: .asciiz "NUMERO DO TIME \t Time \n"
 tab: .asciiz "\t  \t  "
 
-TABELA: .asciiz "TIMES \t JOGOS \t VITORIAS \t DERROTAS \n"
+RES: .asciiz "      RESULTADOS"
 
-OPCAOINVALIDA: .asciiz "\n Opção invalida \n"
+OPCAOINVALIDA: .asciiz "\n OPCAO INVALIDA \n"
 
 
 
@@ -674,19 +675,70 @@ j menu
 
 
 
+MENOS_JOGOS:
+
+
+li		$v0, 4		# $v0 =4 
+la		$a0,msg30		# 
+syscall
+
+
+
+li		$v0, 4		# $v0 =4 
+la		$a0,msg29		# 
+syscall
 
 
 
 
+li		$v0, 5		# $v0 =5 
+syscall
 
 
-
-
-
+j menu
 
 
 
 P4:
+
+#soma dos jogos
+
+la		$s0, jogos		#
+lw      $s1,const4
+lw      $s3,const9
+add		$t1, $zero, $zero		# $t1 = $11 +zerot2
+add		$t2, $zero, $zero		# $t1 = $11 +zerot2
+addi		$t4, $zero, 1		# $t1 = $11 +zerot2
+
+
+
+loop_de_soma:
+mul     $t0,$s1,$t1 
+add	    $t0,$t0,$s0	#$00$s0 + $t2
+lw		$t3, 0($t0)		# 
+add		$t2, $t2, $t3		# $t1 = $11 +zerot2
+
+
+
+
+
+
+addi	$t1, $t1, 1			# $t1 = $t1 1 0
+bne		$s3, $t1, loop_de_soma	# if $t0 == $t1 then target
+
+
+
+slti $t6,$t2,89
+beq	$t6, $t4, MENOS_JOGOS	# if$t6 ==zerot1 then target
+
+
+
+li		$v0, 1		# $v0 =4 
+move		$a0,$t2		# 
+syscall
+
+
+
 
 addi		$s0, $zero, 9		# $s0 = $t1 + $t2
 la		    $s1, times		# 
@@ -829,7 +881,9 @@ bne		$t1, $t0, Loop_mostra_classificacao	# if $t0 !=s0t1 then target
 
 bne		$s0, $zero, subS0	# if $s0 != $t1 then target
 
-
+li		$v0, 4		# $v0 =4 
+la		$a0,msg29		# 
+syscall
 
 
 li $v0, 5
@@ -874,11 +928,22 @@ lw		$t1, const	# $t1 = 2
 add 	$s0,$zero,$zero #zerando t0 para loop
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
-la $a0, TABELA # msg1 ser o objeto da escrita
+la $a0, RES # msg1 ser o objeto da escrita
+syscall
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, TRACADO # msg1 ser o objeto da escrita
 syscall
 		 
 
 loop_para_mostrar_times_TABELA:
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, enter # msg1 ser o objeto da escrita
+syscall
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, NOME # msg1 ser o objeto da escrita
+syscall
 
 sll $t0,$s0,3 #multiplicando o indice por 32
 add $t3,$t2,$t0 #somando a multiplicacao com o endereco
@@ -891,7 +956,9 @@ syscall
 lw	$s6, const4		# 
 mul $t8,$s6,$s0
 
-
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, Njogos # msg1 ser o objeto da escrita
+syscall
 
 add $t3,$t4,$t8 #somando a multiplicacao com o endereco
 #JOGOS
@@ -902,6 +969,9 @@ add     $a0,$t7,$zero
 syscall
 
 
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, Nvitorias # msg1 ser o objeto da escrita
+syscall
 
 
 
@@ -914,6 +984,10 @@ add     $a0,$t7,$zero
 syscall
 
 
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, NdeDerrotas # msg1 ser o objeto da escrita
+syscall
 
 add $t3,$t6,$t8 #somando a multiplicacao com o endereco
 #Derrotas
@@ -931,6 +1005,10 @@ li $v0, 4 # codigo para passar texto atraves do console syscall
 la $a0, enter # msg1 ser o objeto da escrita
 syscall
 
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, TRACADO # msg1 ser o objeto da escrita
+syscall
 
 addi $s0,$s0,1
 bne	$s0, $t1, loop_para_mostrar_times_TABELA	# if$s0 != $t1 then target
