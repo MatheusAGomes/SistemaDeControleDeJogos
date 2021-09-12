@@ -214,7 +214,7 @@ slti  $t6,$t0,0
 
 beq $t6,$t7,ERRO
 
-slti  $t6,$t0,5
+slti  $t6,$t0,6
 
 beq $t6,$zero,ERRO
 
