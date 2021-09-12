@@ -12,21 +12,9 @@ msg9: .asciiz "\n Selecione o primeiro time a fazer o resultado(Numero do time):
 msg11: .asciiz "\n Selecione o segundo time a fazer o resultado(Numero do time): "
 msg12: .asciiz "\n Os times sao iguais, escolha 2 times diferentes"
 msg13: .asciiz "\n Time vitorioso(Numero do time): "
-msg14: .asciiz "\n 5 - tabela "
+msg14: .asciiz "\n 5 - Resultados "
 msg15: .asciiz "\n 0 - Sair "
-
-
-
-
-
-
-
 msg16: .asciiz "\n Escolha o time para fazer a alteracao (Numero do time):  "
-
-
-
-
-
 msg17: .asciiz "\n 1 - Alterar o nome do time "
 msg18: .asciiz "\n 2 - Alterar jogo "
 msg19: .asciiz "\n 3 - Alterar resultado "
@@ -40,27 +28,34 @@ msg26: .asciiz " Escolha um time para alterar a partida(Numero do time):  "
 msg27: .asciiz " Perdeu \n "
 msg28: .asciiz " Ganhou \n "
 
+msg29: .asciiz " Aperte qualquer tecla para sair ! \n "
 
 
 
 voltar: .asciiz "\n 4 - Voltar: "
 
+Situacao: .asciiz " : \n "
 
 
 
 SEMI: .asciiz " SEMI-FINAL \n "
-CLASSIFICADO: .asciiz " CLASSIFICADO \n "
+CLASSIFICADO: .asciiz " QUARTAS-DE-FINAL \n "
 NAOCLASSIFICADO: .asciiz " NAO CLASSIFICADO \n "
 REBAIXADO: .asciiz " REBAIXADO \n "
 
 
+CLASSIFICACAO: .asciiz "\n CLASSIFICACAO: "
+
+
+NOME: .asciiz "\n NOME: "
+Nvitorias: .asciiz "\n VITORIAS: "
 
 
 
 
 
 
-
+TRACADO: .asciiz "\n |-----------------------------| "
 
 
 aspas1: .asciiz "( "
@@ -82,6 +77,7 @@ const : .word 10
 const1 : .word 1
 const2: .word 40
 const4: .word 4
+const8: .word 8
 const9: .word 9
 const36: .word 36
 constneg: .word -1
@@ -94,6 +90,8 @@ jogos: .space 40
 vitorias: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
 
 derrotas: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
+
+array_ordenado: .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 
 resultadodejogos: .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
                   .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
@@ -640,7 +638,197 @@ j menu
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 P4:
+
+addi		$s0, $zero, 9		# $s0 = $t1 + $t2
+la		    $s1, times		# 
+la		    $s2, vitorias		#
+lw          $s3,const4
+lw          $t0,const
+lw          $s4,const1
+
+addi	    $t1, $zero, 0			#   $t0 = zero1 + 0
+addi	    $t4, $zero, 1			#   $t0 = zero1 + 0
+
+
+li		$v0, 4		# $v0 =4 
+la		$a0,CLASSIFICACAO		# 
+syscall
+
+
+li		$v0, 4		# $v0 =4 
+la		$a0,TRACADO		# 
+syscall
+
+
+j Loop_mostra_classificacao
+subS0:
+
+
+addi	$s0, $s0, -1		# $s0 = s01 -10
+add	$t1, $zero, $zero			#   $t0 = zero1 + 0
+
+
+Loop_mostra_classificacao:
+
+
+mul $t3,$t1,$s3
+add	$t3,$t3,$s2		#$t3  $31+s$t2
+lw	$t5, 0($t3)		# 
+
+
+beq	$t5, $s0, mostrar_time	# if$t5 ==s0t1 then target
+
+j nao_mostrar_time
+mostrar_time:
+
+li		$v0, 4		# $v0 =4 
+la		$a0,tab		# 
+syscall
+
+li		$v0, 1		# $v0 =4 
+move    $a0, $t4		# 
+syscall
+
+
+li		$v0, 4		# $v0 =4 
+la		$a0,NOME		# 
+syscall
+
+sll $t7,$t1,3 #multiplicando o indice por 32
+add $t7,$t7,$s1 #somando a multiplicacao com o endereco
+li		$v0,4		# $v0 8= 
+la		$a0,0($t7) 		# $a0 0($t3)
+syscall
+
+
+li		$v0, 4		# $v0 =4 
+la		$a0,Nvitorias		# 
+syscall
+
+
+mul $t3,$t1,$s3
+add	$t3,$t3,$s2
+lw	$t5, 0($t3)
+
+li		$v0, 1		# $v0 =4 
+move    $a0, $t5		# 
+syscall
+
+li		$v0, 4		# $v0 =4 
+la		$a0,enter		# 
+syscall
+li		$v0, 4		# $v0 =4 
+la		$a0,enter		# 
+syscall
+
+
+slti $t6,$t4,3
+beq	$t6, $s4, SEMIFINAL	# if  == $t1 then target
+
+slti $t6,$t4,7
+beq	$t6, $s4, QUARTAS	# if  == $t1 then target
+
+slti $t6,$t4,9
+beq	$t6, $s4, DES	# if  == $t1 then target
+
+li		$v0, 4		# $v0 =4 
+la		$a0,REBAIXADO		# 
+syscall
+
+
+
+j terminar
+SEMIFINAL:
+
+li		$v0, 4		# $v0 =4 
+la		$a0,SEMI		# 
+syscall
+
+j terminar
+
+QUARTAS:
+
+li		$v0, 4		# $v0 =4 
+la		$a0,CLASSIFICADO		# 
+syscall
+
+j terminar
+
+
+DES:
+
+li		$v0, 4		# $v0 =4 
+la		$a0,NAOCLASSIFICADO		# 
+syscall
+
+j terminar
+
+terminar:
+
+li		$v0, 4		# $v0 =4 
+la		$a0,TRACADO		# 
+syscall
+
+addi	$t4, $t4, 1		# $t4 = $41 t2
+		
+
+
+nao_mostrar_time:
+addi	    $t1, $t1, 1			#   $t0 = zero1 + 0
+bne		$t1, $t0, Loop_mostra_classificacao	# if $t0 !=s0t1 then target
+
+
+bne		$s0, $zero, subS0	# if $s0 != $t1 then target
+
+
+
+
+li $v0, 5
+syscall
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 P5:
 
@@ -742,11 +930,11 @@ syscall
 
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
-la $a0, msg20 # msg1 ser o objeto da escrita
+la $a0, voltar # msg1 ser o objeto da escrita
 syscall
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
-la $a0, voltar # msg1 ser o objeto da escrita
+la $a0, msg20 # msg1 ser o objeto da escrita
 syscall
 
 li $v0, 5 # codigo para passar texto atraves do console syscall
