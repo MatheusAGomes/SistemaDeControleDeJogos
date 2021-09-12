@@ -70,6 +70,9 @@ tab: .asciiz "\t  \t  "
 
 TABELA: .asciiz "TIMES \t JOGOS \t VITORIAS \t DERROTAS \n"
 
+OPCAOINVALIDA: .asciiz "\n Opção invalida \n"
+
+
 
 
 
@@ -144,6 +147,24 @@ bne	$s0, $t1, loopparazerar	# if$s0 != $t1 then target
 jr		$ra					# jump to $ra
 
 
+
+ERRO:
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, OPCAOINVALIDA # msg1 ser o objeto da escrita
+syscall
+
+j menu
+
+
+ERRO_2:
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, OPCAOINVALIDA # msg1 ser o objeto da escrita
+syscall
+
+j menu_2
+
 menu:
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
@@ -178,13 +199,24 @@ syscall
 
 
 
+
+
+
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
 
 #passando o valor da escolha para $t0
 add $t0,$v0,$zero
 
+lw $t7,const1
 
+slti  $t6,$t0,0
+
+beq $t6,$t7,ERRO
+
+slti  $t6,$t0,5
+
+beq $t6,$zero,ERRO
 
 
 addi $t1, $t0, -1			# $t0 = $t1 + 0
@@ -940,7 +972,24 @@ syscall
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
 
+
+
+
 add $t0,$v0,$zero
+
+
+
+
+lw $t7,const1
+
+slti  $t6,$t0,1
+
+beq $t6,$t7,ERRO_2
+
+slti  $t6,$t0,4
+
+beq $t6,$zero,ERRO_2
+
 
 
 addi $t1, $t0, -1			# $t0 = $t1 + 0
