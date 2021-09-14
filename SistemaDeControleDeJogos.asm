@@ -50,7 +50,7 @@ CLASSIFICACAO: .asciiz "\n CLASSIFICACAO: "
 NOME: .asciiz "\n NOME: "
 Nvitorias: .asciiz "\n VITORIAS: "
 Njogos: .asciiz "\n JOGOS: "
-NdeDerrotas: .asciiz "\n Derrotas: "
+NdeDerrotas: .asciiz "\n DERROTAS: "
 
 
 
@@ -1195,6 +1195,20 @@ syscall
 addi	$t3, $v0, -1			# $t0 = v01 + 0
 
 move 	$s3, $t3		# $s3 = $31
+
+
+beq	$s3, $a1, Times_iguais_P2	# if $s2 !=s$t1Times_iguaistarget
+
+j continua_p3_2
+
+Times_iguais_P2:
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, msg12 # msg1 ser o objeto da escrita
+syscall
+j P3_2
+
+continua_p3_2:
+
 
 #a1 continua sendo o primeiro time
 
