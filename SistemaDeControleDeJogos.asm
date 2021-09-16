@@ -60,7 +60,7 @@ TRACADO: .asciiz "\n |-----------------------------| "
 aspas1: .asciiz "( "
 aspas2: .asciiz "  )"
 enter: .asciiz "\n"
-versus: .asciiz "X \n"
+versus: .asciiz "\n X \n"
 
 
 
@@ -1231,6 +1231,20 @@ loop_para_mostrar_jogos:
 
 sll $t0,$s0,3 #multiplicando o indice por 32
 add $t3,$s7,$t0 #somando a multiplicacao com o endereco
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, aspas1 # msg1 ser o objeto da escrita
+syscall
+
+
+li		$v0,1		# $v0 8= 
+addi 	$a0, $s0, 1# $a0 = $t1
+syscall
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, aspas2 # msg1 ser o objeto da escrita
+syscall
+
 
 li		$v0,4		# $v0 8= 
 la		$a0,0($t3) 		# $a0 0($t3)
