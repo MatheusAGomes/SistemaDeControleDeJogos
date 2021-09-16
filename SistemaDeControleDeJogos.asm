@@ -89,7 +89,7 @@ constneg: .word -1
 
 times: .space 80 #10*8
 
-jogos: .space 40
+jogos: .space 40 #10*4
 
 vitorias: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
 
@@ -519,7 +519,7 @@ mul $t0,$s6,$s1
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $zero, 1			# $t5 = $51 1 0
+addi	$t5, $t5, 1			
 sw 		$t5, 0($t7)
 
 
@@ -572,7 +572,7 @@ mul $t0,$s6,$s2
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $zero, 1			# $t5 = $51 1 0
+addi	$t5, $t5, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
 
@@ -728,7 +728,7 @@ bne		$s3, $t1, loop_de_soma	# if $t0 == $t1 then target
 
 
 
-slti $t6,$t2,89
+slti $t6,$t2,10
 beq	$t6, $t4, MENOS_JOGOS	# if$t6 ==zerot1 then target
 
 
