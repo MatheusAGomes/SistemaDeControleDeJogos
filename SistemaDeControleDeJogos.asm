@@ -38,7 +38,7 @@ Situacao: .asciiz " : \n "
 JOGOJAJOGADO: .asciiz "\n JOGO JA JOGADO,ESCOLHA OUTROS TIMES OU EDITE O RESULTADO NO MENU \n"
 
 
-
+TimesNaoRegistrados: .asciiz " \n OS TIMES DO CAMPEONATO NAO FORAM REGISTRADOS \n POR FAVOR ESCOLHA A PRIMEIRA OPCAO DO MENU PARA CRIACAO DOS TIMES \n"
 
 SEMI: .asciiz " SEMI-FINAL \n "
 CLASSIFICADO: .asciiz " QUARTAS-DE-FINAL \n "
@@ -76,8 +76,16 @@ RES: .asciiz "      RESULTADOS"
 OPCAOINVALIDA: .asciiz "\n OPCAO INVALIDA \n"
 TIMEINVALIDO: .asciiz "\n TIME INVALIDO \n"
 
+loginDefaut: .asciiz "adm1"
+senhaDefault: .word 12345
+
+loginusuario: .space 5 #1*3
 
 
+TextoLogin:.asciiz "\n Usuario:"
+TEXTOSENHA:.asciiz "\n SENHA:"
+ErroNoLogin:.asciiz "\n USUARIO OU SENHA INCORRETOS \n"
+LoginEfetuado:.asciiz "\nLOGIN EFETUADO COM SUCESSO \n"
 
 const : .word 10
 const1 : .word 1
@@ -114,8 +122,11 @@ resultadodejogos: .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 .globl main 
 main:
 
-jal		zerar				# jump to zerar and save position to $ra
+jal	zerar				# jump to zerar and save position to $ra
+add		$v1, $zero, $zero		# limpando de lixo
+jal		login				# jump to login and save position to $ra
 jal menu
+
 
 
 li $v0,10
@@ -176,6 +187,11 @@ syscall
 
 jr		$ra					# jump to $ra
 
+Erronomenu:
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, TimesNaoRegistrados # msg1 ser o objeto da escrita
+syscall
+
 
 menu:
 
@@ -234,6 +250,9 @@ beq $t6,$zero,ERRO
 addi $t1, $t0, -1			# $t0 = $t1 + 0
 
 beq $t1,$zero,P1
+
+beq	$v1, $zero,Erronomenu 	# if$t0 == $t1 then target
+
 
 
 addi $t2, $t0, -2		# $t0 = $t1 + 0
@@ -299,6 +318,8 @@ syscall
 
 addi $s0,$s0,1
 bne	$s0, $t1, loop_para_leitura_de_times	# if$s0 != $t1 then target
+
+addi	$v1, $v1, 1		# $v1 = v11 + 0
 
 j menu
 
@@ -681,6 +702,9 @@ sw 		$t5, 0($t0)
 
 
 continua_2:
+
+
+
 
 
 j menu
@@ -1975,3 +1999,95 @@ syscall
 move 	$v0, $zero		# $t5 = zero
 
 jr		$ra					# jump to $ra
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+login:
+
+
+li $v0,4
+la $a0, TextoLogin		
+syscall
+
+#login e senha objetivo
+la $t1,loginDefaut
+la $t3, loginusuario	 
+
+lw $t2,senhaDefault
+li $a1,5
+
+add $t4,$t3,$zero #somando a multiplicacao com o endereco
+
+li		$v0,8 		# $v0 8= 
+la		$a0,0($t4) 		# $a0 0($t3)
+syscall
+
+li $v0,4
+la $a0, TEXTOSENHA		
+syscall
+
+
+
+li		$v0,5 		# $v0 8= 
+syscall
+
+
+add		$t5, $zero, $v0		# $t5 = zero1 +v0t2
+
+
+
+la $s2,loginDefaut
+la $s3, loginusuario
+li		$s4,6 		# $s4 4= 
+
+
+
+cmploop:
+    lb      $t2,($s2)                   # get next char from str1
+    lb      $t3,($s3)                   # get next char from str2
+    bne     $t2,$t3,cmpne               # are they different? if yes, fly
+
+    beq     $t2,$zero,cmpeq             # at EOS? yes, fly (strings equal)
+
+    addi    $s2,$s2,1                   # point to next char
+    addi    $s3,$s3,1                   # point to next char
+    j       cmploop
+
+# strings are _not_ equal -- send message
+cmpne:
+    li      $v0,4   
+    la      $a0,ErroNoLogin
+    syscall
+    addi	$s0,$zero, 0			# $s0 =$s01 + 0
+    la $s3, loginusuario
+    target:
+     lb      $t2,($s2)
+     addi	$t2,$zero, 0			# $s0 =$s01 + 0
+
+
+    addi	$s0,$s0,1			# $s0 =$s01 + 0
+
+    bne	$s0, $s4, target	# if$s0 != $t1 then target
+    
+
+    j       login
+
+# strings _are_ equal -- send message
+cmpeq:
+    li      $v0,4
+    la      $a0,LoginEfetuado
+    syscall
+    jr		$ra					# jump to $ra
