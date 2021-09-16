@@ -29,9 +29,6 @@ msg27: .asciiz " PERDEU \n "
 msg28: .asciiz " GANHOU \n "
 msg29: .asciiz " APERTE ENTER TECLA PARA SAIR ! \n "
 msg30: .asciiz "\n A QUANTIDADE DE JOGOS NAO FOI CONCLUIDA ! \n "
-
-
-
 voltar: .asciiz "\n 4 - VOLTAR: "
 
 Situacao: .asciiz " : \n "
@@ -72,7 +69,7 @@ tab: .asciiz "\t  \t  "
 RES: .asciiz "      RESULTADOS"
 
 OPCAOINVALIDA: .asciiz "\n OPCAO INVALIDA \n"
-
+TIMEINVALIDO: .asciiz "\n TIME INVALIDO \n"
 
 
 
@@ -165,6 +162,15 @@ la $a0, OPCAOINVALIDA # msg1 ser o objeto da escrita
 syscall
 
 j menu_2
+
+ERRO_DE_ESCOLHA:
+
+li $v0, 4 # codigo para passar texto atraves do console syscall
+la $a0, TIMEINVALIDO # msg1 ser o objeto da escrita
+syscall
+
+jr		$ra					# jump to $ra
+
 
 menu:
 
@@ -343,6 +349,22 @@ add		$s1, $v0, $zero		# $s1 = v01 +zerot2
 
 addi	$s1, $s1, -1			#igular ao indice 
 
+slti $t6,$s1,0
+
+beq	$zero,$t6,escolha_dos_times_segundo	# if$t0 == $t1 then target
+
+slti $t6,$s1,10
+
+beq	$zero, $t6,escolha_dos_times_segundo	# if$t0 == $t1 then target
+
+jal		ERRO_DE_ESCOLHA
+
+j	escolha_dos_times			# jump to target and save position to $ra
+
+
+
+escolha_dos_times_segundo:
+
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
 la $a0, msg11 # msg1 ser o objeto da escrita
@@ -352,8 +374,30 @@ li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
 
 
+
+
+
+
+
 add		$s2, $v0, $zero		# $s1 = v01 +zerot2
 addi	$s2, $s2, -1			#igular ao indice
+
+
+
+
+slti $t6,$s2,0
+
+beq	$zero,$t6,verificatime	# if$t0 == $t1 then target
+
+slti $t6,$s2,10
+
+beq	$zero, $t6,verificatime	# if$t0 == $t1 then target
+
+jal		ERRO_DE_ESCOLHA
+
+j	escolha_dos_times_segundo			# jump to target and save position to $ra
+
+verificatime:
 
 beq	$s2, $s1, Times_iguais	# if $s2 !=s$t1Times_iguaistarget
 
@@ -728,7 +772,7 @@ bne		$s3, $t1, loop_de_soma	# if $t0 == $t1 then target
 
 
 
-slti $t6,$t2,10
+slti $t6,$t2,89
 beq	$t6, $t4, MENOS_JOGOS	# if$t6 ==zerot1 then target
 
 
