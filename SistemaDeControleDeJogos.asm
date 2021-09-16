@@ -1,4 +1,5 @@
 .data
+TESTE: .asciiz "\n TESTE \n "
 
 msg1: .asciiz "\n 1 - REGISTRAR TIMES "
 msg2: .asciiz "\n 2 - REGISTRAR RESULTADOS "
@@ -33,6 +34,9 @@ voltar: .asciiz "\n 4 - VOLTAR: "
 ResultadodaPartida: .asciiz "\n RESULTADO DA PARTIDA: "
 
 Situacao: .asciiz " : \n "
+
+JOGOJAJOGADO: .asciiz "\n JOGO JA JOGADO,ESCOLHA OUTROS TIMES OU EDITE O RESULTADO NO MENU \n"
+
 
 
 
@@ -414,6 +418,18 @@ beq	$s2, $s1, Times_iguais	# if $s2 !=s$t1Times_iguaistarget
 
 move 	$a0, $s1		# $a0 =$s11
 move 	$a1, $s2		# $a1 = $t1
+
+
+
+
+
+jal Verifica_se_ja_jogou
+
+beq $v0,$zero,P2
+
+
+
+
 j continua_1
 
 Times_iguais:
@@ -421,6 +437,11 @@ li $v0, 4 # codigo para passar texto atraves do console syscall
 la $a0, msg12 # msg1 ser o objeto da escrita
 syscall
 j escolha_dos_times
+
+
+
+
+
 
 continua_1:
 
@@ -1911,3 +1932,46 @@ j menu
 P3_4:
 
 j menu
+
+
+Verifica_se_ja_jogou:
+
+
+#a0 time 1 
+#a1 time 2
+
+
+
+
+
+la		$t1, resultadodejogos
+lw		$t2, const4
+lw		$t3, const36
+
+
+
+mul     $t0,$a1,$t3
+mul     $t4,$a0,$t2
+add     $t0,$t0,$t4 
+add		$t0, $t1, $t0
+
+lw		$t5, 0($t0)
+
+
+bne		$zero, $t5, Jajogou	# if $zero == $t1 then target
+
+
+addi 	$v0,$zero,1	# $t5 = zero
+
+jr		$ra					# jump to $ra
+
+Jajogou:
+
+li $v0,4
+la $a0, JOGOJAJOGADO		
+syscall
+
+
+move 	$v0, $zero		# $t5 = zero
+
+jr		$ra					# jump to $ra
