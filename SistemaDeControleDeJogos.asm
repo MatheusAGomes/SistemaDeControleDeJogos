@@ -30,6 +30,7 @@ msg28: .asciiz " GANHOU \n "
 msg29: .asciiz " APERTE ENTER TECLA PARA SAIR ! \n "
 msg30: .asciiz "\n A QUANTIDADE DE JOGOS NAO FOI CONCLUIDA ! \n "
 voltar: .asciiz "\n 4 - VOLTAR: "
+ResultadodaPartida: .asciiz "\n RESULTADO DA PARTIDA: "
 
 Situacao: .asciiz " : \n "
 
@@ -1685,9 +1686,7 @@ beq $t6, $s2, continua_loop_P3_positivo
 
 j continua_loop_P32_P3
 continua_loop_P3_positivo:
-li		$v0,4		# $v0 8= 
-la		$a0,0($t3) 		# $a0 0($t3)
-syscall
+
 
 li		$v0,4		# $v0 8= 
 la		$a0,aspas1 		# $a0 0($t3)
@@ -1703,6 +1702,14 @@ li		$v0,4		# $v0 8=
 la		$a0,aspas2 		# $a0 0($t3)
 syscall
 
+li		$v0,4		# $v0 8= 
+la		$a0,0($t3) 		# $a0 0($t3)
+syscall
+
+
+li		$v0,4		# $v0 8= 
+la		$a0,ResultadodaPartida 		# $a0 0($t3)
+syscall
 
 li		$v0,4 		
 la    $a0,msg28
