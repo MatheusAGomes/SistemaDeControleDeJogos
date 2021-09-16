@@ -351,11 +351,16 @@ addi	$s1, $s1, -1			#igular ao indice
 
 slti $t6,$s1,0
 
-beq	$zero,$t6,escolha_dos_times_segundo	# if$t0 == $t1 then target
+bne	$zero,$t6,ERRO_NA_ESCOLHA	# if$t0 == $t1 then target
+
 
 slti $t6,$s1,10
 
-beq	$zero, $t6,escolha_dos_times_segundo	# if$t0 == $t1 then target
+beq	$zero, $t6,ERRO_NA_ESCOLHA	# if$t0 == $t1 then target
+
+j escolha_dos_times_segundo
+
+ERRO_NA_ESCOLHA:
 
 jal		ERRO_DE_ESCOLHA
 
@@ -387,11 +392,16 @@ addi	$s2, $s2, -1			#igular ao indice
 
 slti $t6,$s2,0
 
-beq	$zero,$t6,verificatime	# if$t0 == $t1 then target
+bne	$zero,$t6,ERRO_NA_ESCOLHA_2	# if$t0 == $t1 then target
+
 
 slti $t6,$s2,10
 
-beq	$zero, $t6,verificatime	# if$t0 == $t1 then target
+beq	$zero, $t6,ERRO_NA_ESCOLHA_2	# if$t0 == $t1 then target
+
+j verificatime
+
+ERRO_NA_ESCOLHA_2:
 
 jal		ERRO_DE_ESCOLHA
 
@@ -691,11 +701,12 @@ addi $s0,$s0,1
 bne	$s0, $t1, loop_para_alterar_times	# if$s0 != $t1 then target
 
 
-
+Primeira_escolha_em_P3:
 
 li $v0, 4 # codigo para passar texto atraves do console syscall
 la $a0, msg16 # msg1 ser o objeto da escrita
 syscall
+
 
 li $v0, 5 # codigo para passar texto atraves do console syscall
 syscall
@@ -706,10 +717,29 @@ addi	$v0, $v0, -1			# $a1 = a11 -1 0
 move 	$a1,$v0		# $t0  v01
 
 
+slti $t6,$a1,0
+
+bne	$zero,$t6,ERRO_NA_ESCOLHA_3	# if$t0 == $t1 then target
+
+
+slti $t6,$a1,10
+
+beq	$zero, $t6,ERRO_NA_ESCOLHA_3	# if$t0 == $t1 then target
 
 jal		menu_2				# jump to menu_2 and save position to $ra
 
 j menu
+
+ERRO_NA_ESCOLHA_3:
+
+jal		ERRO_DE_ESCOLHA
+
+j	Primeira_escolha_em_P3			# jump to target and save position to $ra
+
+
+
+
+
 
 
 
@@ -1228,6 +1258,9 @@ add		$t7, $t7, $t4		# $t0 = $01 +t4t2
 addi	$s0, $s0, 1		# $s0 = zero1 +zerot2
 bne	$s0, $t2, loop_para_mostrar_jogos	# if$s0 != $t1 then target
 
+
+Segunda_escolha_em_P3:
+
 li		$v0,4 		
 la    $a0,msg26
 syscall
@@ -1240,6 +1273,26 @@ addi	$t3, $v0, -1			# $t0 = v01 + 0
 
 move 	$s3, $t3		# $s3 = $31
 
+
+slti $t6,$s3,0
+
+bne	$zero,$t6,ERRO_NA_ESCOLHA_4	# if$t0 == $t1 then target
+
+
+slti $t6,$s3,10
+
+beq	$zero, $t6,ERRO_NA_ESCOLHA_4	# if$t0 == $t1 then target
+
+
+j continua_p3_1
+
+ERRO_NA_ESCOLHA_4:
+
+jal		ERRO_DE_ESCOLHA
+
+j	Segunda_escolha_em_P3
+
+continua_p3_1:
 
 beq	$s3, $a1, Times_iguais_P2	# if $s2 !=s$t1Times_iguaistarget
 
