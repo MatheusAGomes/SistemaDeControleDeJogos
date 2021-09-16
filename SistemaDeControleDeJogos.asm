@@ -1600,7 +1600,7 @@ mul $t0,$s6,$a1
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $zero, 1			# $t5 = $51 1 0
+addi	$t5, $t5, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
 la		$s5, resultadodejogos		#
@@ -1640,7 +1640,7 @@ mul $t0,$s6,$s3
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
-addi	$t5, $zero, 1			# $t5 = $51 1 0
+addi	$t5, $t5, 1			# $t5 = $51 1 0
 sw 		$t5, 0($t7)
 
 
