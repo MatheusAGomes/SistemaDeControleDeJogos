@@ -28,7 +28,7 @@ msg25: .asciiz " NAO JOGOU \n"
 msg26: .asciiz " ESCOLHA UM TIME PARA ALTERAR A PARTIDA (NUMERO DO TIME):  "
 msg27: .asciiz " PERDEU \n "
 msg28: .asciiz " GANHOU \n "
-msg29: .asciiz " APERTE ENTER TECLA PARA SAIR ! \n "
+msg29: .asciiz "\n APERTE ENTER TECLA PARA SAIR ! \n "
 msg30: .asciiz "\n A QUANTIDADE DE JOGOS NAO FOI CONCLUIDA ! \n "
 voltar: .asciiz "\n 4 - VOLTAR: "
 ResultadodaPartida: .asciiz "\n RESULTADO DA PARTIDA: "
@@ -105,7 +105,6 @@ vitorias: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 
 derrotas: .word  0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
 
-array_ordenado: .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 
 resultadodejogos: .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
                   .word 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
@@ -607,20 +606,20 @@ bne		$t6, $s1, Primeiro_Time_perdedor	# if $t6 !=s1t1 then target
 j Segundo_time_perdedor
 
 Primeiro_Time_perdedor:
-
-lw	$s6,const4		# 
-
+#colcoando derrota para o primeiro time
+la	$t3, derrotas
+lw	$s6,const4		 
 mul $t0,$s6,$s1
-
-
-add $t7,$t3,$t0 #somando a multiplicacao com o endereco
+add $t7,$t3,$t0 
 
 lw		$t5, 0($t7)
 addi	$t5, $t5, 1			
 sw 		$t5, 0($t7)
 
 
-## COLOCAR NA LINHA DO JOGADOR 1 
+
+
+## COLOCAR NA LINHA DO JOGADOR 2
 
 la		$s5, resultadodejogos		#
 lw	    $s6, const36
@@ -637,14 +636,12 @@ sw 		$t5, 0($t0)
 
 
 la		$s5, resultadodejogos		#
-lw	    $s6, const9
+lw	    $s6, const36
 lw      $s7, const4
 mul     $t0,$s1,$s6
 mul     $t1,$s2,$s7
 add     $t0,$t0,$t1 
 add		$t0, $s5, $t0		# $t0 = s51 + 0t2
-
-
 
 lw		$t5, 0($t0)
 addi	$t5, $zero,-1			# $t5 = $51 1 0
@@ -662,10 +659,8 @@ Segundo_time_perdedor:
 
 
 lw	$s6,const4		# 
-
+la	$t3, derrotas
 mul $t0,$s6,$s2
-
-
 add $t7,$t3,$t0 #somando a multiplicacao com o endereco
 
 lw		$t5, 0($t7)
@@ -846,10 +841,14 @@ add		$t2, $t2, $t3		# $t1 = $11 +zerot2
 addi	$t1, $t1, 1			# $t1 = $t1 1 0
 bne		$s3, $t1, loop_de_soma	# if $t0 == $t1 then target
 
+li		$v0, 1		# $v0 =4 
+move	$a0,$t2		# 
+syscall
 
 
-slti $t6,$t2,89
-beq	$t6, $t4, MENOS_JOGOS	# if$t6 ==zerot1 then target
+
+slti $t6,$t2,80
+bne	$t6, $zero, MENOS_JOGOS	# if$t6 ==zerot1 then target
 
 
 
@@ -1409,8 +1408,8 @@ beq		$t5, $s2, Segundo_Jogador_derrotado
 
 
 
-mul $t0,$s3,$s7
-add	$t0,$t0,$s0
+mul $t0,$a1,$s7
+add	$t0,$t0,$s1
 lw  $t5, 0($t0)
 addi $t5,$t5,-1
 sw  $t5,0($t0)		# 
@@ -1419,8 +1418,8 @@ sw  $t5,0($t0)		#
 
 #tabela de derrortas
 
-mul $t0,$a1,$s7
-add	$t0,$t0,$s1
+mul $t0,$s3,$s7
+add	$t0,$t0,$s0
 lw  $t5, 0($t0)
 addi $t5,$t5,-1
 sw  $t5,0($t0)
@@ -1816,7 +1815,7 @@ addi	$s3, $v0, -1			#s3 = v01 -1 0
 ##time 1 em A1
 ##time 2 em S3
 
-
+#vendo na tabela do 2 time quem ganhou
 
 la		$s5, resultadodejogos		#
 lw	    $s6, const36
@@ -1827,16 +1826,17 @@ mul     $t1,$a1,$s7
 add     $t0,$t0,$t1 
 add		$t0, $s5, $t0		# $t0 = s51 + 0t2
 
+#se sengundo time venceu vai para primeiro time vencedor
 lw		$t5, 0($t0)
-beq		$t5, $s1, Primeiro_Time_vencedor	# if $t5 == $t1 then target
+bne		$t5, $s1, Primeiro_Time_vencedor	# if $t5 == $t1 then target
 
 
-#A1 Derrotado E S3 O Vencedor
+# se tornara o A1 Derrotado E S3 O Vencedor
 
 addi	$t5,$zero,1			# $t0 =1 -1 0
 sw		$t5, 0($t0)	
 
-
+#primeiro jogador
 mul     $t0,$a1,$s6
 mul     $t1,$s3,$s7
 add     $t0,$t0,$t1 
@@ -1851,7 +1851,7 @@ la		$t1, vitorias
 #alterando jogador 1
 mul     $t0,$a1,$s7
 add     $t0,$t0,$t1
-
+#diminui uma vitoria
 lw		$t5, 0($t0)
 addi	$t5,$t5,-1
 sw		$t5, 0($t0)
@@ -1861,16 +1861,16 @@ la      $s4, derrotas
 
 mul     $t0,$a1,$s7
 add     $t7,$t0,$s4
-
+#aumentou uma derrota
 lw		$t5, 0($t7)
 addi	$t5,$t5,1
 sw		$t5, 0($t7)
 
 #alterando jogador 2
-
+la		$t1, vitorias
 mul     $t0,$s3,$s7
 add     $t0,$t0,$t1
-
+#aumentou uma vitoria
 lw		$t5, 0($t0)
 addi	$t5,$t5,1
 sw		$t5, 0($t0)
@@ -1892,9 +1892,6 @@ j fim_da_alteracao
 Primeiro_Time_vencedor:
 
 
-li		$v0,1 		
-addi    $a0,$zero,2
-syscall
 
 addi	$t5,$zero,-1			# $t0 =1 -1 0
 sw		$t5, 0($t0)		# 
@@ -2026,7 +2023,7 @@ syscall
 la $t1,loginDefaut
 la $t3, loginusuario	 
 
-lw $t2,senhaDefault
+lw $t6,senhaDefault
 li $a1,5
 
 add $t4,$t3,$zero #somando a multiplicacao com o endereco
@@ -2087,6 +2084,10 @@ cmpne:
 
 # strings _are_ equal -- send message
 cmpeq:
+
+    bne $t6,$t5,cmpne
+
+
     li      $v0,4
     la      $a0,LoginEfetuado
     syscall
